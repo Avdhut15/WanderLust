@@ -1,0 +1,294 @@
+/* ==========================================
+   Google Font
+========================================== */
+
+body {
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: #222;
+    background: #fff;
+}
+
+.container {
+    flex: 1;
+}
+
+/* ==========================================
+   Navbar
+========================================== */
+
+.navbar {
+    height: 5rem;
+    background: white;
+    box-shadow: 0 2px 12px rgba(0,0,0,.05);
+}
+
+.fa-compass {
+    color: #fe424d;
+    font-size: 2rem;
+}
+
+.nav-link {
+    color: #222 !important;
+    font-weight: 500;
+    transition: .25s;
+}
+
+.nav-link:hover {
+    color: #fe424d !important;
+}
+
+/* ==========================================
+   Footer
+========================================== */
+
+.f-info {
+    height: 8rem;
+    background: #ebebeb;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.f-info-links,
+.f-info-socials,
+.f-info-brand {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.f-info-links a {
+    color: #222;
+    text-decoration: none;
+    margin: 0 .5rem;
+}
+
+.f-info-links a:hover {
+    text-decoration: underline;
+}
+
+.f-info-socials i {
+    font-size: 1.25rem;
+    margin: 0 .8rem;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.f-info-socials i:hover {
+    color: #fe424d;
+}
+
+/* ==========================================
+   Listing Cards (Home Page)
+========================================== */
+
+.listing-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.card {
+    border: none !important;
+    margin-bottom: 2rem;
+    transition: .3s ease;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+}
+
+.card-img-top {
+    width: 100% !important;
+    height: 20rem;
+    object-fit: cover !important;
+    border-radius: 1rem !important;
+}
+
+.card-body {
+    padding: .8rem .2rem !important;
+}
+
+.card-text {
+    color: #222;
+    font-size: .95rem;
+}
+
+.card-text p {
+    margin-bottom: .25rem;
+}
+
+.card-img-overlay {
+    opacity: 0;
+    border-radius: 1rem;
+    transition: .3s;
+}
+
+.card-img-overlay:hover {
+    opacity: .12;
+    background: white;
+}
+
+/* ==========================================
+   Forms
+========================================== */
+
+.form-control {
+    border-radius: .8rem;
+}
+
+.form-control:focus {
+    border-color: #fe424d !important;
+    box-shadow: 0 0 0 .2rem rgba(254,66,77,.2) !important;
+}
+
+.add-btn,
+.edit-btn {
+    border: none !important;
+    border-radius: .7rem !important;
+    padding: .65rem 1.5rem !important;
+    font-weight: 500;
+    transition: .25s;
+}
+
+.add-btn {
+    background: #fe424d !important;
+}
+
+.add-btn:hover {
+    background: #e63946 !important;
+}
+
+.edit-btn {
+    background: #222 !important;
+}
+
+.edit-btn:hover {
+    background: #444 !important;
+}
+
+/* ==========================================
+   Show Page
+========================================== */
+
+.show-heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+.show-img {
+    width: 100%;
+    height: 340px;
+    object-fit: cover;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.08);
+}
+
+.show-title {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.show-desc {
+    color: #666;
+    line-height: 1.7;
+    margin: 1rem 0;
+}
+
+.show-price {
+    color: #fe424d;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.show-location {
+    color: #555;
+    font-size: 1.05rem;
+}
+
+.btns {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-edit {
+    background: #fe424d !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: .7rem 1.8rem !important;
+}
+
+.btn-edit:hover {
+    background: #e63946 !important;
+}
+
+.btn-delete {
+    background: #222 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: .7rem 1.8rem !important;
+}
+
+.btn-delete:hover {
+    background: #444 !important;
+}
+
+/* ==========================================
+   Responsive
+========================================== */
+
+@media (max-width: 992px) {
+
+    .show-img {
+        height: 280px;
+        margin-bottom: 2rem;
+    }
+
+    .show-title {
+        font-size: 1.7rem;
+    }
+
+    .btns {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btns a,
+    .btns button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .card-img-top {
+        height: 16rem;
+    }
+
+    .show-heading {
+        font-size: 2rem;
+    }
+
+    .show-title {
+        font-size: 1.5rem;
+    }
+
+    .show-price {
+        font-size: 1.6rem;
+    }
+
+    .navbar {
+        height: auto;
+        padding: .8rem 0;
+    }
+}
