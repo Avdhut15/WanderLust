@@ -35,7 +35,10 @@ router.get(
         const listing = await Listing.findById(id).populate("reviews");
 
         if (!listing) {
-            throw new ExpressError(404, "Listing not found!");
+            throw new ExpressError(
+                404,
+                "The listing you are trying to access does not exist."
+            );
         }
 
         res.render("listings/show.ejs", { listing });
@@ -48,6 +51,7 @@ router.post(
     wrapAsync(async (req, res) => {
         const newListing = new Listing(req.body.listing);
         await newListing.save();
+        req.flash("success", "New Listing created");
         res.redirect("/listings");
     })
 );
@@ -59,7 +63,10 @@ router.get(
         const listing = await Listing.findById(id);
 
         if (!listing) {
-            throw new ExpressError(404, "Listing not found!");
+            throw new ExpressError(
+                404,
+                "The listing you are trying to access does not exist."
+            );
         }
 
         res.render("listings/edit.ejs", { listing });
@@ -76,6 +83,7 @@ router.put(
             { ...req.body.listing },
             { new: true }
         );
+        req.flash("success", "Listing updated successfully");
         res.redirect(`/listings/${id}`);
     })
 );
@@ -91,6 +99,7 @@ router.delete(
         }
 
         await Review.deleteMany({ _id: { $in: deletedListing.reviews } });
+    req.flash("success", "Listing deleted successfully");
         res.redirect("/listings");
     })
 );
