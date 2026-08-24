@@ -4,7 +4,7 @@ const Review = require("../models/review.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const { listingSchema } = require("../schema.js");
-const {isLoggedIn} = require("../middleware.js");
+const { isLoggedIn, isOwner } = require("../middleware.js");
 
 const router = express.Router();
 
@@ -36,7 +36,9 @@ router.get(
     "/:id",
     wrapAsync(async (req, res) => {
         const { id } = req.params;
-        const listing = await Listing.findById(id).populate("reviews");
+        const listing = await Listing.findById(id)
+            .populate({ path: "reviews", populate: { path: "author" } })
+            .populate("owner");
 
         if (!listing) {
             throw new ExpressError(
@@ -56,6 +58,7 @@ router.post(
     validateListing,
     wrapAsync(async (req, res) => {
         const newListing = new Listing(req.body.listing);
+        newListing.owner = req.user._id;
         await newListing.save();
         req.flash("success", "New Listing created");
         res.redirect("/listings");
@@ -66,18 +69,9 @@ router.post(
 router.get(
     "/:id/edit",
     isLoggedIn,
+    isOwner,
     wrapAsync(async (req, res) => {
-        const { id } = req.params;
-        const listing = await Listing.findById(id);
-
-        if (!listing) {
-            throw new ExpressError(
-                404,
-                "The listing you are trying to access does not exist."
-            );
-        }
-
-        res.render("listings/edit.ejs", { listing });
+        res.render("listings/edit.ejs", { listing: req.listing });
     })
 );
 
@@ -85,14 +79,12 @@ router.get(
 router.put(
     "/:id",
     isLoggedIn,
+    isOwner,
     validateListing,
     wrapAsync(async (req, res) => {
         const { id } = req.params;
-        await Listing.findByIdAndUpdate(
-            id,
-            { ...req.body.listing },
-            { new: true }
-        );
+        Object.assign(req.listing, req.body.listing);
+        await req.listing.save();
         req.flash("success", "Listing updated successfully");
         res.redirect(`/listings/${id}`);
     })
@@ -102,16 +94,11 @@ router.put(
 router.delete(
     "/:id",
     isLoggedIn,
+    isOwner,
     wrapAsync(async (req, res) => {
-        const { id } = req.params;
-        const deletedListing = await Listing.findByIdAndDelete(id);
-
-        if (!deletedListing) {
-            throw new ExpressError(404, "Listing not found!");
-        }
-
-        await Review.deleteMany({ _id: { $in: deletedListing.reviews } });
-    req.flash("success", "Listing deleted successfully");
+        await Review.deleteMany({ _id: { $in: req.listing.reviews } });
+        await req.listing.deleteOne();
+        req.flash("success", "Listing deleted successfully");
         res.redirect("/listings");
     })
 );

@@ -31,6 +31,7 @@ router.post(
         }
 
         const newReview = new Review(req.body.review);
+        newReview.author = req.user._id;
         listing.reviews.push(newReview);
         await newReview.save();
         await listing.save();
@@ -59,13 +60,18 @@ router.delete(
             throw new ExpressError(404, "Review not found!");
         }
 
-        const deletedReview = await Review.findByIdAndDelete(reviewId);
-        if (!deletedReview) {
+        const review = await Review.findById(reviewId);
+        if (!review) {
             throw new ExpressError(404, "Review not found!");
         }
 
+        if (!review.author || !review.author.equals(req.user._id)) {
+            throw new ExpressError(403, "You do not have permission to delete this review");
+        }
+
+        await review.deleteOne();
         await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-    req.flash("success", "Review deleted successfully");
+        req.flash("success", "Review deleted successfully");
         res.redirect(`/listings/${id}`);
     })
 );
