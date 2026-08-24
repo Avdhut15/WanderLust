@@ -4,6 +4,7 @@ const Review = require("../models/review.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const { reviewSchema } = require("../schema.js");
+const { isLoggedIn } = require("../middleware.js");
 
 const router = express.Router({ mergeParams: true });
 
@@ -16,8 +17,10 @@ const validateReview = (req, res, next) => {
     next();
 };
 
+// create review
 router.post(
     "/",
+    isLoggedIn,
     validateReview,
     wrapAsync(async (req, res) => {
         const { id } = req.params;
@@ -37,8 +40,10 @@ router.post(
     })
 );
 
+// delete review
 router.delete(
     "/:reviewId",
+    isLoggedIn,
     wrapAsync(async (req, res) => {
         const { id, reviewId } = req.params;
         const listing = await Listing.findById(id);
