@@ -1,79 +1,20 @@
 const express = require("express");
-const Listing = require("../models/listing.js");
-const Review = require("../models/review.js");
 const wrapAsync = require("../utils/wrapAsync.js");
-const ExpressError = require("../utils/ExpressError.js");
-const { reviewSchema } = require("../schema.js");
-const { isLoggedIn } = require("../middleware.js");
+const reviewController = require("../controllers/review.js");
+const { isLoggedIn, validateReview } = require("../middleware.js");
 
 const router = express.Router({ mergeParams: true });
 
-const validateReview = (req, res, next) => {
-    const { error } = reviewSchema.validate(req.body);
-    if (error) {
-        const errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    }
-    next();
-};
+router
+    .route("/")
+    .post(
+        isLoggedIn,
+        validateReview,
+        wrapAsync(reviewController.create)
+    );
 
-// create review
-router.post(
-    "/",
-    isLoggedIn,
-    validateReview,
-    wrapAsync(async (req, res) => {
-        const { id } = req.params;
-        const listing = await Listing.findById(id);
-
-        if (!listing) {
-            throw new ExpressError(404, "Listing not found!");
-        }
-
-        const newReview = new Review(req.body.review);
-        newReview.author = req.user._id;
-        listing.reviews.push(newReview);
-        await newReview.save();
-        await listing.save();
-
-        req.flash("success", "Review added successfully");
-        res.redirect(`/listings/${listing._id}`);
-    })
-);
-
-// delete review
-router.delete(
-    "/:reviewId",
-    isLoggedIn,
-    wrapAsync(async (req, res) => {
-        const { id, reviewId } = req.params;
-        const listing = await Listing.findById(id);
-
-        if (!listing) {
-            throw new ExpressError(404, "Listing not found!");
-        }
-
-        const reviewBelongsToListing = listing.reviews.some((review) =>
-            review.equals(reviewId)
-        );
-        if (!reviewBelongsToListing) {
-            throw new ExpressError(404, "Review not found!");
-        }
-
-        const review = await Review.findById(reviewId);
-        if (!review) {
-            throw new ExpressError(404, "Review not found!");
-        }
-
-        if (!review.author || !review.author.equals(req.user._id)) {
-            throw new ExpressError(403, "You do not have permission to delete this review");
-        }
-
-        await review.deleteOne();
-        await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-        req.flash("success", "Review deleted successfully");
-        res.redirect(`/listings/${id}`);
-    })
-);
+router
+    .route("/:reviewId")
+    .delete(isLoggedIn, wrapAsync(reviewController.destroy));
 
 module.exports = router;

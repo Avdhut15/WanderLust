@@ -8,8 +8,10 @@ listings, and share reviews with ratings.
 
 ```text
 app.js                  Express application and middleware setup
-models/                 Mongoose schemas for listings and reviews
-routes/                 Listing and review route handlers
+controllers/            MVC controllers for listings, reviews, and users
+models/                 Mongoose schemas for listings, reviews, and users
+routes/                 Resource routing and middleware composition
+middleware.js           Authentication, authorization, and request validation
 views/                  EJS pages and shared layouts/partials
 public/                 CSS and browser-side JavaScript
 init/                   Database seed data and initialization scripts
