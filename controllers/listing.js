@@ -1,6 +1,22 @@
 const Listing = require("../models/listing.js");
 const Review = require("../models/review.js");
 const ExpressError = require("../utils/ExpressError.js");
+const cloudinary = require("../config/cloudinary.js");
+
+const uploadToCloudinary = (file) => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            { folder: "wanderlust/listings", resource_type: "image" },
+            (error, result) => {
+                if (error) {
+                    return reject(error);
+                }
+                resolve(result);
+            }
+        );
+        stream.end(file.buffer);
+    });
+};
 
 module.exports.index = async (req, res) => {
     const allListings = await Listing.find({});
@@ -30,9 +46,10 @@ module.exports.show = async (req, res) => {
 module.exports.create = async (req, res) => {
     const newListing = new Listing(req.body.listing);
     if (req.file) {
+        const uploadedImage = await uploadToCloudinary(req.file);
         newListing.image = {
-            filename: req.file.filename,
-            url: `/uploads/${req.file.filename}`,
+            filename: uploadedImage.public_id,
+            url: uploadedImage.secure_url,
         };
     }
     newListing.owner = req.user._id;
@@ -49,9 +66,10 @@ module.exports.update = async (req, res) => {
     const { id } = req.params;
     Object.assign(req.listing, req.body.listing);
     if (req.file) {
+        const uploadedImage = await uploadToCloudinary(req.file);
         req.listing.image = {
-            filename: req.file.filename,
-            url: `/uploads/${req.file.filename}`,
+            filename: uploadedImage.public_id,
+            url: uploadedImage.secure_url,
         };
     }
     await req.listing.save();

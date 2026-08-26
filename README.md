@@ -23,7 +23,8 @@ schema.js               Joi request validation schemas
 
 - The listings index displays all saved listings.
 - The new-listing form creates a listing after Joi and Mongoose validation.
-- New listings accept image uploads through Multer and store them in `public/uploads`.
+- New listings accept image uploads through Multer before sending them to Cloudinary.
+- Listing images are uploaded to Cloudinary and MongoDB stores their secure URL and public ID.
 - Each listing has a detail page with its description, location, price, image,
   and reviews.
 - Listings can be edited or deleted. Deleting a listing also removes its reviews.
@@ -63,19 +64,28 @@ schema.js               Joi request validation schemas
    npm install
    ```
 
-2. Make sure MongoDB is running locally at:
+2. Create a `.env` file from `.env.example` and add the values from your
+   Cloudinary Dashboard under **API Keys**:
+
+   ```text
+   CLOUDINARY_CLOUD_NAME=your-cloud-name
+   CLOUDINARY_API_KEY=your-api-key
+   CLOUDINARY_API_SECRET=your-api-secret
+   ```
+
+3. Make sure MongoDB is running locally at:
 
    ```text
    mongodb://127.0.0.1:27017/wanderlust
    ```
 
-3. Start the application:
+4. Start the application:
 
    ```bash
    node app.js
    ```
 
-4. Open `http://localhost:8080` in a browser.
+5. Open `http://localhost:8080` in a browser.
 
 ## Features
 

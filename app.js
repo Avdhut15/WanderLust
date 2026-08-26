@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -17,7 +18,7 @@ const userRouter = require("./routes/user.js");
 
 
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/wanderlust";
 
 main()
     .then(() => {
@@ -42,7 +43,7 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
 const sessionOptions = {
-    secret: " mysupersecretcode",
+    secret: process.env.SESSION_SECRET || "development-secret-change-me",
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -73,6 +74,7 @@ app.use((req,res,next) => {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     res.locals.currentUser = req.user;
+    res.locals.currentUrl = req.originalUrl;
     next();
 });
 

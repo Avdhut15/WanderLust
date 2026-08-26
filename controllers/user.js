@@ -1,5 +1,11 @@
 const User = require("../models/user.js");
 
+const getSafeRedirect = (redirectUrl) => {
+    return redirectUrl && redirectUrl.startsWith("/") && !redirectUrl.startsWith("//")
+        ? redirectUrl
+        : null;
+};
+
 module.exports.renderSignupForm = (req, res) => {
     res.render("users/signup.ejs");
 };
@@ -24,12 +30,16 @@ module.exports.signup = async (req, res, next) => {
 };
 
 module.exports.renderLoginForm = (req, res) => {
-    res.render("users/login.ejs");
+    res.render("users/login.ejs", {
+        redirectUrl: getSafeRedirect(req.query.redirect) || "/listings",
+    });
 };
 
 module.exports.login = (req, res) => {
     req.flash("success", "Welcome back!");
-    const redirectUrl = res.locals.redirectUrl || "/listings";
+    const redirectUrl =
+        res.locals.redirectUrl || getSafeRedirect(req.body.redirect) || "/listings";
+    delete req.session.redirectUrl;
     res.redirect(redirectUrl);
 };
 
