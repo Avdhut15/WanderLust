@@ -1,9 +1,11 @@
 const express = require("express");
 const wrapAsync = require("../utils/wrapAsync.js");
 const listingController = require("../controllers/listing.js");
+const upload = require("../utils/upload.js");
 const {
     isLoggedIn,
     isOwner,
+    requireListingImage,
     validateListing,
 } = require("../middleware.js");
 
@@ -14,6 +16,8 @@ router
     .get(wrapAsync(listingController.index))
     .post(
         isLoggedIn,
+        upload.single("image"),
+        requireListingImage,
         validateListing,
         wrapAsync(listingController.create)
     );
@@ -26,6 +30,7 @@ router
     .put(
         isLoggedIn,
         isOwner,
+        upload.single("image"),
         validateListing,
         wrapAsync(listingController.update)
     )

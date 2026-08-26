@@ -50,3 +50,10 @@ module.exports.validateReview = (req, res, next) => {
     }
     next();
 };
+
+module.exports.requireListingImage = (req, res, next) => {
+    if (!req.file) {
+        throw new ExpressError(400, "Please upload a listing image.");
+    }
+    next();
+};

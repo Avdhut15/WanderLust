@@ -29,6 +29,12 @@ module.exports.show = async (req, res) => {
 
 module.exports.create = async (req, res) => {
     const newListing = new Listing(req.body.listing);
+    if (req.file) {
+        newListing.image = {
+            filename: req.file.filename,
+            url: `/uploads/${req.file.filename}`,
+        };
+    }
     newListing.owner = req.user._id;
     await newListing.save();
     req.flash("success", "New Listing created");
@@ -42,6 +48,12 @@ module.exports.renderEditForm = (req, res) => {
 module.exports.update = async (req, res) => {
     const { id } = req.params;
     Object.assign(req.listing, req.body.listing);
+    if (req.file) {
+        req.listing.image = {
+            filename: req.file.filename,
+            url: `/uploads/${req.file.filename}`,
+        };
+    }
     await req.listing.save();
     req.flash("success", "Listing updated successfully");
     res.redirect(`/listings/${id}`);

@@ -1,0 +1,148 @@
+:root {
+    --rating-empty: #d7d7d7;
+    --rating-filled: #f5b301;
+}
+
+.starability-basic {
+    display: block;
+    position: relative;
+    width: 180px;
+    min-height: 60px;
+    padding: 0;
+    border: 0;
+}
+
+.starability-basic legend {
+    width: 100%;
+}
+
+.starability-basic > input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+.starability-basic > label {
+    position: relative;
+    display: block;
+    float: left;
+    width: 30px;
+    height: 30px;
+    color: var(--rating-empty);
+    font-size: 0;
+    cursor: pointer;
+}
+
+.starability-basic > label::before {
+    content: "★";
+    display: block;
+    font-size: 28px;
+    line-height: 30px;
+}
+
+.starability-basic > input:focus + label {
+    outline: 2px dotted #555;
+    outline-offset: 2px;
+}
+
+.starability-basic > input:checked + label,
+.starability-basic:has(#rating-2:checked) > label[for="rating-1"],
+.starability-basic:has(#rating-3:checked) > label[for="rating-1"],
+.starability-basic:has(#rating-3:checked) > label[for="rating-2"],
+.starability-basic:has(#rating-4:checked) > label[for="rating-1"],
+.starability-basic:has(#rating-4:checked) > label[for="rating-2"],
+.starability-basic:has(#rating-4:checked) > label[for="rating-3"],
+.starability-basic:has(#rating-5:checked) > label[for="rating-1"],
+.starability-basic:has(#rating-5:checked) > label[for="rating-2"],
+.starability-basic:has(#rating-5:checked) > label[for="rating-3"],
+.starability-basic:has(#rating-5:checked) > label[for="rating-4"] {
+    color: var(--rating-filled);
+}
+
+.starability-basic > label:hover,
+.starability-basic:has(label[for="rating-2"]:hover) > label[for="rating-1"],
+.starability-basic:has(label[for="rating-3"]:hover) > label[for="rating-1"],
+.starability-basic:has(label[for="rating-3"]:hover) > label[for="rating-2"],
+.starability-basic:has(label[for="rating-4"]:hover) > label[for="rating-1"],
+.starability-basic:has(label[for="rating-4"]:hover) > label[for="rating-2"],
+.starability-basic:has(label[for="rating-4"]:hover) > label[for="rating-3"],
+.starability-basic:has(label[for="rating-5"]:hover) > label[for="rating-1"],
+.starability-basic:has(label[for="rating-5"]:hover) > label[for="rating-2"],
+.starability-basic:has(label[for="rating-5"]:hover) > label[for="rating-3"],
+.starability-basic:has(label[for="rating-5"]:hover) > label[for="rating-4"] {
+    color: var(--rating-filled);
+}
+
+.starability-basic .input-no-rate:checked + label {
+    color: var(--rating-empty);
+}
+
+.starability-result {
+    position: relative;
+    width: 150px;
+    height: 30px;
+    color: transparent;
+    font-size: 0;
+    letter-spacing: 0;
+}
+
+.starability-result::before,
+.starability-result::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    width: 150px;
+    height: 30px;
+    font-size: 28px;
+    line-height: 30px;
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+
+.starability-result::before {
+    content: "★★★★★";
+    color: var(--rating-empty);
+}
+
+.starability-result::after {
+    content: "★★★★★";
+    color: var(--rating-filled);
+}
+
+.starability-result[data-rating="1"]::after {
+    width: 30px;
+}
+
+.starability-result[data-rating="2"]::after {
+    width: 60px;
+}
+
+.starability-result[data-rating="3"]::after {
+    width: 90px;
+}
+
+.starability-result[data-rating="4"]::after {
+    width: 120px;
+}
+
+.starability-result[data-rating="5"]::after {
+    width: 150px;
+}
+
+.review-form-wrap .starability-basic {
+    margin: 0;
+}
+
+.review-form-wrap .starability-basic legend {
+    font-size: 1rem;
+    margin-bottom: .5rem;
+}
+
+.reviews-list .starability-result {
+    margin-bottom: .5rem;
+}

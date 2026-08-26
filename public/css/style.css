@@ -242,10 +242,6 @@ body {
     transform: translateY(-3px);
 }
 
-.review-rating {
-    letter-spacing: .15rem;
-}
-
 .show-title {
     font-size: 2rem;
     font-weight: 700;

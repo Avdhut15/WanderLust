@@ -7,6 +7,7 @@
     <form
       action="/listings/<%= listing._id %>?_method=PUT"
       method="POST"
+      enctype="multipart/form-data"
       novalidate
       class="needs-validation"
     >
@@ -31,15 +32,15 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Image Link</label>
+        <label class="form-label" for="image">Replace Listing Image</label>
         <input
-          type="text"
-          name="listing[image][url]"
+          type="file"
+          name="image"
+          id="image"
           class="form-control"
-          value="<%= listing.image.url %>"
-          required
+          accept="image/*"
         />
-        <div class="invalid-feedback">Please enter valid link</div>
+        <div class="form-text">Leave empty to keep the current image.</div>
       </div>
 
       <div class="row">

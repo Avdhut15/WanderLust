@@ -23,6 +23,7 @@ schema.js               Joi request validation schemas
 
 - The listings index displays all saved listings.
 - The new-listing form creates a listing after Joi and Mongoose validation.
+- New listings accept image uploads through Multer and store them in `public/uploads`.
 - Each listing has a detail page with its description, location, price, image,
   and reviews.
 - Listings can be edited or deleted. Deleting a listing also removes its reviews.
