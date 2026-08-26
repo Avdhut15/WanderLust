@@ -109,10 +109,11 @@
                 <div class="card-body">
                   <div
                     class="starability-result"
-                    data-rating="<%= review.rating %>"
                     aria-label="Rating: <%= review.rating %> out of 5"
                   >
-                    Rating: <%= review.rating %> out of 5
+                    <% for (let star = 1; star <= 5; star++) { %>
+                      <span class="rating-star <%= star <= review.rating ? 'is-filled' : '' %>" aria-hidden="true">★</span>
+                    <% } %>
                   </div>
                   <p class="card-text mt-2 mb-0">
                     Reviewed by <%= review.author ? review.author.username : "Unknown user" %>
