@@ -9,9 +9,21 @@
     imageInput.addEventListener('change', () => {
       const [file] = imageInput.files
 
-      imagePreview.src = file
-        ? URL.createObjectURL(file)
-        : imagePreview.dataset.currentImage
+      if (imagePreview.dataset.objectUrl) {
+        URL.revokeObjectURL(imagePreview.dataset.objectUrl)
+        delete imagePreview.dataset.objectUrl
+      }
+
+      if (file) {
+        imagePreview.dataset.objectUrl = URL.createObjectURL(file)
+        imagePreview.src = imagePreview.dataset.objectUrl
+        imagePreview.hidden = false
+      } else if (imagePreview.dataset.currentImage) {
+        imagePreview.src = imagePreview.dataset.currentImage
+      } else {
+        imagePreview.removeAttribute('src')
+        imagePreview.hidden = true
+      }
     })
   }
 

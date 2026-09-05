@@ -277,6 +277,33 @@ body {
     font-size: 1.05rem;
 }
 
+.listing-map {
+    width: 100%;
+    height: 360px;
+    margin-top: 1.5rem;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,.08);
+}
+
+.home-map-marker {
+    display: grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    place-items: center;
+    color: white;
+    background: #fe424d;
+    border: 3px solid white;
+    border-radius: 50% 50% 50% 0;
+    box-shadow: 0 3px 8px rgba(0,0,0,.3);
+    transform: rotate(-45deg);
+}
+
+.home-map-marker i {
+    transform: rotate(45deg);
+    font-size: .9rem;
+}
+
 .btns {
     display: flex;
     gap: 1rem;

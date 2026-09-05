@@ -2,6 +2,7 @@ const Listing = require("../models/listing.js");
 const Review = require("../models/review.js");
 const ExpressError = require("../utils/ExpressError.js");
 const cloudinary = require("../config/cloudinary.js");
+const geocodeLocation = require("../utils/geocode.js");
 
 const uploadToCloudinary = (file) => {
     return new Promise((resolve, reject) => {
@@ -40,11 +41,23 @@ module.exports.show = async (req, res) => {
         );
     }
 
+    if (!listing.geometry?.coordinates?.length) {
+        const geometry = await geocodeLocation(listing.location, listing.country);
+        if (geometry) {
+            listing.geometry = geometry;
+            await listing.save();
+        }
+    }
+
     res.render("listings/show.ejs", { listing });
 };
 
 module.exports.create = async (req, res) => {
     const newListing = new Listing(req.body.listing);
+    newListing.geometry = await geocodeLocation(
+        newListing.location,
+        newListing.country
+    );
     if (req.file) {
         const uploadedImage = await uploadToCloudinary(req.file);
         newListing.image = {
@@ -64,7 +77,16 @@ module.exports.renderEditForm = (req, res) => {
 
 module.exports.update = async (req, res) => {
     const { id } = req.params;
+    const locationChanged =
+        req.body.listing.location !== req.listing.location ||
+        req.body.listing.country !== req.listing.country;
     Object.assign(req.listing, req.body.listing);
+    if (locationChanged) {
+        req.listing.geometry = await geocodeLocation(
+            req.listing.location,
+            req.listing.country
+        );
+    }
     if (req.file) {
         const uploadedImage = await uploadToCloudinary(req.file);
         req.listing.image = {

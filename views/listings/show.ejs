@@ -1,5 +1,11 @@
 <% layout("/layouts/boilerplate") %>
 
+<link
+  href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css"
+  rel="stylesheet"
+/>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+
 <div class="container mt-4 mb-5">
   <h2 class="fw-bold mb-4"><%= listing.title %></h2>
 
@@ -29,6 +35,19 @@
         <%= listing.location %>, <%= listing.country %>
       </p>
 
+      <% if (listing.geometry && listing.geometry.coordinates && listing.geometry.coordinates.length === 2) { %>
+        <div
+          id="listing-map"
+          class="listing-map"
+          data-coordinates="<%= JSON.stringify(listing.geometry.coordinates) %>"
+          data-title="<%= listing.title %>"
+          data-location="<%= listing.location %>, <%= listing.country %>"
+        ></div>
+        <p class="form-text">Map location is approximate and based on the listed city.</p>
+      <% } else { %>
+        <p class="text-muted">Map location is not available for this listing yet.</p>
+      <% } %>
+
       <% if (currentUser && listing.owner && currentUser._id.equals(listing.owner._id)) { %>
         <div class="btns">
           <a href="/listings/<%= listing._id %>/edit" class="btn btn-edit">
@@ -46,7 +65,8 @@
     </div>
   </div>
 
-  <section class="reviews-section">
+  <% if (currentUser || listing.reviews.length > 0) { %>
+    <section class="reviews-section">
     <% if (currentUser) { %>
       <div class="review-form-wrap">
         <h4>Leave a review</h4>
@@ -97,11 +117,9 @@
       </div>
     <% } %>
 
-    <div class="reviews-list">
-      <h4>Reviews</h4>
-      <% if (listing.reviews.length === 0) { %>
-        <p class="text-muted">No reviews yet. Be the first to share your experience.</p>
-      <% } else { %>
+    <% if (listing.reviews.length > 0) { %>
+      <div class="reviews-list">
+        <h4>Reviews</h4>
         <div class="row g-4">
           <% listing.reviews.forEach((review) => { %>
             <div class="col-md-6">
@@ -133,7 +151,38 @@
             </div>
           <% }); %>
         </div>
-      <% } %>
-    </div>
-  </section>
+      </div>
+    <% } %>
+    </section>
+  <% } %>
 </div>
+
+<script>
+  const mapElement = document.querySelector("#listing-map");
+
+  if (mapElement) {
+    const coordinates = JSON.parse(mapElement.dataset.coordinates);
+    const map = new maplibregl.Map({
+      container: mapElement,
+      style: "https://tiles.openfreemap.org/styles/bright",
+      center: coordinates,
+      zoom: 10.5,
+    });
+
+    const homeMarker = document.createElement("div");
+    homeMarker.className = "home-map-marker";
+    homeMarker.innerHTML = '<i class="fa-solid fa-house" aria-hidden="true"></i>';
+
+    new maplibregl.Marker({ element: homeMarker, anchor: "bottom" })
+      .setLngLat(coordinates)
+      .setPopup(
+        new maplibregl.Popup({ offset: 25 }).setHTML(
+          `<strong>${mapElement.dataset.title}</strong><br>${mapElement.dataset.location}`
+        )
+      )
+      .addTo(map)
+      .togglePopup();
+
+    map.addControl(new maplibregl.NavigationControl(), "top-right");
+  }
+</script>
