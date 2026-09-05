@@ -148,6 +148,19 @@ body {
     box-shadow: 0 0 0 .2rem rgba(254,66,77,.2) !important;
 }
 
+.image-preview-wrap {
+    max-width: 360px;
+}
+
+.image-preview {
+    display: block;
+    width: 100%;
+    max-height: 240px;
+    object-fit: cover;
+    border-radius: .8rem;
+    box-shadow: 0 6px 18px rgba(0,0,0,.08);
+}
+
 .add-btn,
 .edit-btn {
     border: none !important;

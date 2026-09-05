@@ -41,6 +41,15 @@
           accept="image/*"
         />
         <div class="form-text">Leave empty to keep the current image.</div>
+        <div class="image-preview-wrap mt-3">
+          <img
+            src="<%= listing.image.url %>"
+            alt="Current listing image"
+            class="image-preview"
+            id="image-preview"
+            data-current-image="<%= listing.image.url %>"
+          />
+        </div>
       </div>
 
       <div class="row">

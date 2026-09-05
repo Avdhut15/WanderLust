@@ -2,6 +2,19 @@
 (() => {
   'use strict'
 
+  const imageInput = document.querySelector('#image')
+  const imagePreview = document.querySelector('#image-preview')
+
+  if (imageInput && imagePreview) {
+    imageInput.addEventListener('change', () => {
+      const [file] = imageInput.files
+
+      imagePreview.src = file
+        ? URL.createObjectURL(file)
+        : imagePreview.dataset.currentImage
+    })
+  }
+
   // Fetch all the forms we want to apply custom Bootstrap validation styles to
   const forms = document.querySelectorAll('.needs-validation')
 
