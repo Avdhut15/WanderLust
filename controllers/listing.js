@@ -3,6 +3,7 @@ const Review = require("../models/review.js");
 const ExpressError = require("../utils/ExpressError.js");
 const cloudinary = require("../config/cloudinary.js");
 const geocodeLocation = require("../utils/geocode.js");
+const TAX_RATE = 0.18;
 
 const uploadToCloudinary = (file) => {
     return new Promise((resolve, reject) => {
@@ -20,8 +21,44 @@ const uploadToCloudinary = (file) => {
 };
 
 module.exports.index = async (req, res) => {
-    const allListings = await Listing.find({});
-    res.render("listings/index.ejs", { allListings });
+    const { search = "", category = "", minPrice = "", maxPrice = "", taxes = "" } = req.query;
+    const filters = {};
+    const trimmedSearch = search.trim();
+    const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    if (trimmedSearch) {
+        const searchRegex = new RegExp(escapeRegex(trimmedSearch), "i");
+        filters.$or = [
+            { title: searchRegex },
+            { description: searchRegex },
+            { location: searchRegex },
+            { country: searchRegex },
+        ];
+    }
+
+    if (category.trim()) {
+        filters.category = category.trim();
+    }
+
+    const priceFilter = {};
+    const minimum = Number(minPrice);
+    const maximum = Number(maxPrice);
+    if (minPrice !== "" && Number.isFinite(minimum) && minimum >= 0) {
+        priceFilter.$gte = minimum;
+    }
+    if (maxPrice !== "" && Number.isFinite(maximum) && maximum >= 0) {
+        priceFilter.$lte = maximum;
+    }
+    if (Object.keys(priceFilter).length) {
+        filters.price = priceFilter;
+    }
+
+    const allListings = await Listing.find(filters).sort({ _id: -1 });
+    res.render("listings/index.ejs", {
+        allListings,
+        filters: { search, category, minPrice, maxPrice, taxes: taxes === "1" },
+        taxRate: TAX_RATE,
+    });
 };
 
 module.exports.renderNewForm = (req, res) => {

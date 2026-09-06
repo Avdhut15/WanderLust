@@ -90,6 +90,16 @@
         <div class="invalid-feedback">Please enter location</div>
       </div>
 
+      <div class="mb-4">
+        <label class="form-label" for="category">Stay category</label>
+        <select name="listing[category]" id="category" class="form-select">
+          <option value="">Choose a category</option>
+          <% ["Trending", "Rooms", "Iconic Cities", "Mountains", "Castles", "Amazing Pools", "Camping", "Farms", "Arctic", "Domes", "Boats"].forEach((category) => { %>
+            <option value="<%= category %>" <%= listing.category === category ? "selected" : "" %>><%= category %></option>
+          <% }); %>
+        </select>
+      </div>
+
       <button class="btn btn-dark edit-btn">Update Listing</button><br /><br />
     </form>
   </div>

@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-md bg-light sticky-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand" href="/listings">
       <i class="fa-solid fa-compass"></i>
     </a>
 
@@ -18,11 +18,24 @@
 
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-link" href="/">Home</a>
-        <a class="nav-link" href="/listings">All Listings</a>
-        <a class="nav-link" href="/listings/new">Add New Listing</a>
+        <a class="nav-link" href="/listings">Explore</a>
       </div>
+      <form class="navbar-search" action="/listings" method="get">
+        <input
+          type="search"
+          name="search"
+          value="<%= typeof filters !== 'undefined' ? filters.search : '' %>"
+          placeholder="Search destinations"
+          aria-label="Search destinations"
+        />
+        <button type="submit" title="Search destinations" aria-label="Search destinations">
+          <i class="fa-solid fa-magnifying-glass"></i> Search
+        </button>
+        <% if (typeof filters !== 'undefined' && filters.category) { %><input type="hidden" name="category" value="<%= filters.category %>" /><% } %>
+        <% if (typeof filters !== 'undefined' && filters.taxes) { %><input type="hidden" name="taxes" value="1" /><% } %>
+      </form>
       <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="/listings/new">List your place</a>
         <% if (currentUser) { %>
           <a class="nav-link" href="/logout">Log out</a>
         <% } else { %>

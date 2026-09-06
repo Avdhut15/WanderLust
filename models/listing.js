@@ -38,6 +38,10 @@ const listingSchema = new Schema({
   country: {
     type: String,
   },
+  category: {
+    type: String,
+    trim: true,
+  },
   geometry: {
     type: {
       type: String,

@@ -1,26 +1,72 @@
 <% layout("/layouts/boilerplate") %>
   <body>
-    <h3>All Listings</h3>
-    <!-- <form method="get" action="/listings/new">
-        <button>Create New Listing</button>
-    </form> -->
+    <% const categories = [
+      { name: "Trending", icon: "fa-fire" },
+      { name: "Rooms", icon: "fa-bed" },
+      { name: "Iconic Cities", icon: "fa-city" },
+      { name: "Mountains", icon: "fa-mountain" },
+      { name: "Castles", icon: "fa-chess-rook" },
+      { name: "Amazing Pools", icon: "fa-person-swimming" },
+      { name: "Camping", icon: "fa-tent" },
+      { name: "Farms", icon: "fa-wheat-awn" },
+      { name: "Arctic", icon: "fa-snowflake" },
+      { name: "Domes", icon: "fa-igloo" },
+      { name: "Boats", icon: "fa-sailboat" }
+    ]; %>
+
+    <nav class="category-strip" aria-label="Browse by category">
+      <a class="category-item <%= !filters.category ? 'active' : '' %>" href="/listings?<%= filters.search ? `search=${encodeURIComponent(filters.search)}` : '' %><%= filters.taxes ? '&taxes=1' : '' %>">
+        <i class="fa-solid fa-compass"></i><span>All stays</span>
+      </a>
+      <% categories.forEach((category) => { %>
+        <a class="category-item <%= filters.category === category.name ? 'active' : '' %>" href="/listings?category=<%= encodeURIComponent(category.name) %><%= filters.search ? `&search=${encodeURIComponent(filters.search)}` : '' %><%= filters.taxes ? '&taxes=1' : '' %>">
+          <i class="fa-solid <%= category.icon %>"></i><span><%= category.name %></span>
+        </a>
+      <% }); %>
+      <form class="tax-toggle" action="/listings" method="get">
+        <input type="hidden" name="search" value="<%= filters.search %>" />
+        <% if (filters.category) { %><input type="hidden" name="category" value="<%= filters.category %>" /><% } %>
+        <label for="tax-toggle">Display total after taxes</label>
+        <label class="tax-switch" for="tax-toggle">
+          <input id="tax-toggle" type="checkbox" name="taxes" value="1" <%= filters.taxes ? "checked" : "" %> onchange="this.form.submit()" />
+          <span class="tax-slider" aria-hidden="true"></span>
+        </label>
+      </form>
+    </nav>
+
+    <div class="listings-heading">
+      <h1><%= filters.search || filters.category ? "Stays that match your search" : "Explore stays" %></h1>
+      <% if (filters.search || filters.category || filters.taxes) { %>
+        <a href="/listings" class="clear-filters">Clear filters</a>
+      <% } %>
+    </div>
 
 <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
   <% for(let listing of allListings){ %>
     <a href="/listings/<%= listing._id %>" class="listing-link">
       <div class="card col"">
-        <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem">
+        <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>" style="height: 20rem">
         <div class="card-img-overlay"></div>
         <div class="card-body">
+          <% const displayPrice = filters.taxes ? Math.round(listing.price * (1 + taxRate)) : listing.price; %>
           <p class="card-text"> 
             <b><%= listing.title%> <br></b>
-            &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
+            &#8377; <%= displayPrice.toLocaleString("en-IN") %> / night<% if (filters.taxes) { %> <small class="tax-note">incl. taxes</small><% } %>
           </p>
         </div>
       </div>
     </a>
    <% } %>
 </div>
+
+<% if (!allListings.length) { %>
+  <div class="empty-results">
+    <i class="fa-regular fa-compass"></i>
+    <h2>No stays found</h2>
+    <p>Try another destination or broaden your price range.</p>
+    <a href="/listings" class="btn btn-dark">View all stays</a>
+  </div>
+<% } %>
 
   </body>
 

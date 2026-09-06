@@ -52,10 +52,10 @@ const sessionOptions = {
     }
 };
 
-// Home Route
-app.get("/", (req, res) => {
-    res.send("Hi, I am root");
-});
+// // Home Route
+// app.get("/", (req, res) => {
+//     res.send("Hi, I am root");
+// });
 
 
 app.use(session(sessionOptions));
