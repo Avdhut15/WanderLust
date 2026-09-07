@@ -4,6 +4,27 @@ const ExpressError = require("../utils/ExpressError.js");
 const cloudinary = require("../config/cloudinary.js");
 const geocodeLocation = require("../utils/geocode.js");
 const TAX_RATE = 0.18;
+const categoryMatchers = {
+    Rooms: /room|loft|apartment|villa|cottage|house|penthouse|brownstone|bungalow/i,
+    "Iconic Cities": /city|downtown|apartment|brownstone|canal|art deco|new york|miami|boston|tokyo|dubai|amsterdam|florence/i,
+    Mountains: /mountain|cabin|ski|alps|banff|aspen|montana|lake tahoe/i,
+    Castles: /castle|palace|royal/i,
+    "Amazing Pools": /pool|villa|resort|oasis|penthouse/i,
+    Camping: /camp|treehouse|cabin|lodge|retreat/i,
+    Farms: /farm|safari|serengeti|ranch/i,
+    Arctic: /arctic|ski|alps|banff|snow|chalet/i,
+    Domes: /dome|oasis|igloo|desert/i,
+    Boats: /boat|island|lake|canal|beach|coast|ocean|sea/i,
+};
+const searchableFields = ["title", "description", "location", "country", "category"];
+
+const getCategoryMatcher = (value) => {
+    const normalizedValue = value.trim().toLowerCase();
+    return Object.entries(categoryMatchers).find(([name]) => {
+        const normalizedName = name.toLowerCase();
+        return normalizedName === normalizedValue || normalizedName.replace(/s$/, "") === normalizedValue.replace(/s$/, "");
+    })?.[1];
+};
 
 const uploadToCloudinary = (file) => {
     return new Promise((resolve, reject) => {
@@ -26,18 +47,36 @@ module.exports.index = async (req, res) => {
     const trimmedSearch = search.trim();
     const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-    if (trimmedSearch) {
-        const searchRegex = new RegExp(escapeRegex(trimmedSearch), "i");
-        filters.$or = [
-            { title: searchRegex },
-            { description: searchRegex },
-            { location: searchRegex },
-            { country: searchRegex },
-        ];
+    if (trimmedSearch && trimmedSearch.toLowerCase() !== "trending") {
+        const categoryMatcher = getCategoryMatcher(trimmedSearch);
+        if (categoryMatcher) {
+            filters.$and = [{
+                $or: searchableFields.map((field) => ({ [field]: categoryMatcher })),
+            }];
+        } else {
+            const searchTerms = trimmedSearch
+                .split(/\s+/)
+                .map((term) => new RegExp(escapeRegex(term), "i"));
+            filters.$and = searchTerms.map((searchRegex) => ({
+                $or: searchableFields.map((field) => ({ [field]: searchRegex })),
+            }));
+        }
     }
 
     if (category.trim()) {
-        filters.category = category.trim();
+        const selectedCategory = category.trim();
+        if (selectedCategory !== "Trending") {
+            const categoryConditions = [
+                { category: selectedCategory },
+                ...["title", "description", "location", "country"].map((field) => ({
+                    [field]: categoryMatchers[selectedCategory] || new RegExp(selectedCategory, "i"),
+                })),
+            ];
+            filters.$and = [
+                ...(filters.$and || []),
+                { $or: categoryConditions },
+            ];
+        }
     }
 
     const priceFilter = {};
@@ -78,15 +117,19 @@ module.exports.show = async (req, res) => {
         );
     }
 
-    if (!listing.geometry?.coordinates?.length) {
-        const geometry = await geocodeLocation(listing.location, listing.country);
-        if (geometry) {
-            listing.geometry = geometry;
-            await listing.save();
-        }
-    }
-
     res.render("listings/show.ejs", { listing });
+
+    if (!listing.geometry?.coordinates?.length) {
+        geocodeLocation(listing.location, listing.country)
+            .then(async (geometry) => {
+                if (geometry) {
+                    await Listing.findByIdAndUpdate(id, { geometry });
+                }
+            })
+            .catch((error) => {
+                console.error("Unable to geocode listing location:", error.message);
+            });
+    }
 };
 
 module.exports.create = async (req, res) => {

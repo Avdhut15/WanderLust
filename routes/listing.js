@@ -2,6 +2,7 @@ const express = require("express");
 const wrapAsync = require("../utils/wrapAsync.js");
 const listingController = require("../controllers/listing.js");
 const upload = require("../utils/upload.js");
+const { csrfProtection } = require("../utils/csrf.js");
 const {
     isLoggedIn,
     isOwner,
@@ -17,6 +18,7 @@ router
     .post(
         isLoggedIn,
         upload.single("image"),
+        csrfProtection,
         requireListingImage,
         validateListing,
         wrapAsync(listingController.create)
@@ -31,12 +33,14 @@ router
         isLoggedIn,
         isOwner,
         upload.single("image"),
+        csrfProtection,
         validateListing,
         wrapAsync(listingController.update)
     )
     .delete(
         isLoggedIn,
         isOwner,
+        csrfProtection,
         wrapAsync(listingController.destroy)
     );
 

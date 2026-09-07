@@ -58,6 +58,7 @@
             action="/listings/<%= listing._id %>?_method=DELETE"
             method="POST"
           >
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             <button class="btn btn-delete">Delete</button>
           </form>
         </div>
@@ -76,6 +77,7 @@
           novalidate
           class="needs-validation"
         >
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="mb-3">
             <fieldset class="starability-basic">
               <legend>Rating</legend>
@@ -143,6 +145,7 @@
                       method="POST"
                       class="mt-3"
                     >
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                       <button class="btn btn-delete" type="submit">Delete Review</button>
                     </form>
                   <% } %>
@@ -161,7 +164,10 @@
   const mapElement = document.querySelector("#listing-map");
 
   if (mapElement) {
-    const coordinates = JSON.parse(mapElement.dataset.coordinates);
+    if (!window.maplibregl) {
+      mapElement.textContent = "Map could not be loaded. Please refresh the page.";
+    } else {
+      const coordinates = JSON.parse(mapElement.dataset.coordinates);
     const map = new maplibregl.Map({
       container: mapElement,
       style: "https://tiles.openfreemap.org/styles/bright",
@@ -184,5 +190,6 @@
       .togglePopup();
 
     map.addControl(new maplibregl.NavigationControl(), "top-right");
+    }
   }
 </script>

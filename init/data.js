@@ -197,7 +197,7 @@ const sampleListings = [
       "Step into the glamour of the 1920s in this stylish Art Deco apartment in South Beach.",
     image: {
       filename: "listingimage",
-      url: "https://plus.unsplash.com/premium_photo-1670963964797-942df1804579?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGxvZGdlfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+      url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
     },
     price: 1600,
     location: "Miami",
@@ -346,6 +346,110 @@ const sampleListings = [
     price: 1800,
     location: "Costa Rica",
     country: "Costa Rica",
+  },
+  {
+    title: "Sunset Farmhouse in Tuscany",
+    description:
+      "Wake up among olive groves in this peaceful farmhouse with a garden, vineyard views, and a wood-fired kitchen.",
+    category: "Farms",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1500076656116-558758c991c1?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 2100,
+    location: "Tuscany",
+    country: "Italy",
+  },
+  {
+    title: "Glass Dome Under the Stars",
+    description:
+      "Sleep beneath a clear dome in the desert with a private deck, comfortable interiors, and unforgettable night skies.",
+    category: "Domes",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 2800,
+    location: "Joshua Tree",
+    country: "United States",
+  },
+  {
+    title: "Sailing Retreat in Santorini",
+    description:
+      "Spend the night aboard a stylish sailboat with bright water views and easy access to the islands of the Aegean Sea.",
+    category: "Boats",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1540946485063-a40da27545f8?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 3200,
+    location: "Santorini",
+    country: "Greece",
+  },
+  {
+    title: "Northern Lights Lodge",
+    description:
+      "Watch the northern lights from a warm glass-roofed lodge surrounded by snowy forests and quiet winter trails.",
+    category: "Arctic",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1483347756197-71ef80e95f73?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 4500,
+    location: "Rovaniemi",
+    country: "Finland",
+  },
+  {
+    title: "Clifftop Castle Estate",
+    description:
+      "Stay in a restored stone castle overlooking the coast, complete with grand rooms, fireplaces, and manicured grounds.",
+    category: "Castles",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1524230572899-a752b3835840?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 5200,
+    location: "County Clare",
+    country: "Ireland",
+  },
+  {
+    title: "Private Pool Villa in Ubud",
+    description:
+      "Unwind in a tropical villa with a private infinity pool, open-air living room, and lush jungle views.",
+    category: "Amazing Pools",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1539367628448-4bc5c9d171c8?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 2600,
+    location: "Ubud",
+    country: "Indonesia",
+  },
+  {
+    title: "Rooftop Loft in Seoul",
+    description:
+      "Explore the city from a bright modern loft with a rooftop terrace, fast Wi-Fi, and skyline views.",
+    category: "Iconic Cities",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 1900,
+    location: "Seoul",
+    country: "South Korea",
+  },
+  {
+    title: "Lakeside Canvas Camp",
+    description:
+      "A comfortable canvas tent beside a quiet lake with a fire pit, kayaks, and trails through the surrounding woods.",
+    category: "Camping",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1504851149312-7a075b496cc7?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 1100,
+    location: "British Columbia",
+    country: "Canada",
   },
 ];
 

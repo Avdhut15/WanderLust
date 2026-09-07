@@ -1,7 +1,12 @@
 const User = require("../models/user.js");
 
 const getSafeRedirect = (redirectUrl) => {
-    return redirectUrl && redirectUrl.startsWith("/") && !redirectUrl.startsWith("//")
+    const isLocalUrl = redirectUrl && redirectUrl.startsWith("/") && !redirectUrl.startsWith("//");
+    const isAuthPage = typeof redirectUrl === "string" &&
+        (redirectUrl === "/login" || redirectUrl.startsWith("/login?") ||
+        redirectUrl === "/signup" || redirectUrl.startsWith("/signup?") || redirectUrl === "/logout");
+
+    return isLocalUrl && !isAuthPage
         ? redirectUrl
         : null;
 };
@@ -30,15 +35,20 @@ module.exports.signup = async (req, res, next) => {
 };
 
 module.exports.renderLoginForm = (req, res) => {
+    const queryRedirect = getSafeRedirect(req.query.redirect);
+    if (req.query.redirect) {
+        req.session.redirectUrl = queryRedirect || "/listings";
+    }
+
     res.render("users/login.ejs", {
-        redirectUrl: getSafeRedirect(req.query.redirect) || "/listings",
+        redirectUrl: queryRedirect || getSafeRedirect(req.session.redirectUrl) || "/listings",
     });
 };
 
 module.exports.login = (req, res) => {
     req.flash("success", "Welcome back!");
     const redirectUrl =
-        res.locals.redirectUrl || getSafeRedirect(req.body.redirect) || "/listings";
+        getSafeRedirect(res.locals.redirectUrl) || getSafeRedirect(req.body.redirect) || "/listings";
     delete req.session.redirectUrl;
     res.redirect(redirectUrl);
 };

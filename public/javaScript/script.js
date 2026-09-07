@@ -2,6 +2,19 @@
 (() => {
   'use strict'
 
+  if (document.querySelector('.show-listing')) {
+    history.scrollRestoration = 'manual'
+    window.scrollTo(0, 0)
+  }
+
+  document.querySelectorAll('.alert').forEach(alert => {
+    window.setTimeout(() => {
+      alert.style.transition = 'opacity .3s ease'
+      alert.style.opacity = '0'
+      window.setTimeout(() => alert.remove(), 300)
+    }, 5000)
+  })
+
   const imageInput = document.querySelector('#image')
   const imagePreview = document.querySelector('#image-preview')
 

@@ -27,8 +27,12 @@ module.exports.isOwner = async (req, res, next) => {
 };
 
 module.exports.saveReditectUrl = (req,res,next) =>{
-    if(req.session.redirectUrl){
-        res.locals.redirectUrl = req.session.redirectUrl;
+    const redirectUrl = req.session.redirectUrl;
+    const isValidRedirect = redirectUrl && redirectUrl.startsWith("/") && !redirectUrl.startsWith("//") &&
+        !redirectUrl.startsWith("/login") && !redirectUrl.startsWith("/signup") && redirectUrl !== "/logout";
+
+    if (isValidRedirect) {
+        res.locals.redirectUrl = redirectUrl;
     }
     next();
 }

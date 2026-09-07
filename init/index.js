@@ -1,26 +1,39 @@
 const mongoose = require("mongoose");
 const initData = require("./data.js");
 const Listing = require("../models/listing.js");
+const geocodeLocation = require("../utils/geocode.js");
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
-
-main()
-  .then(() => {
-    console.log("connected to DB");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
 
 async function main() {
   await mongoose.connect(MONGO_URL);
 }
 
 const initDB = async () => {
+  const listings = [];
+
+  for (const listing of initData.data) {
+    const geometry = await geocodeLocation(listing.location, listing.country);
+    listings.push({ ...listing, geometry, owner: "6a8ae7c4bd82f78e95fe8960" });
+    await new Promise((resolve) => setTimeout(resolve, 1100));
+  }
+
   await Listing.deleteMany({});
-  initData.data = initData.data.map((obj) =>({...obj, owner: "6a8ae7c4bd82f78e95fe8960"}))
-  await Listing.insertMany(initData.data);
+  await Listing.insertMany(listings);
   console.log("data was initialized");
 };
 
-initDB();
+async function run() {
+  try {
+    await main();
+    console.log("connected to DB");
+    await initDB();
+    await mongoose.connection.close();
+  } catch (err) {
+    console.error("Failed to initialize database:", err.message);
+    await mongoose.connection.close();
+    process.exitCode = 1;
+  }
+}
+
+run();
