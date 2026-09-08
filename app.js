@@ -22,6 +22,7 @@ const userRouter = require("./routes/user.js");
 
 
 const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/wanderlust";
+const PORT = process.env.PORT || 8080;
 const isProduction = process.env.NODE_ENV === "production";
 const sessionSecret = process.env.SESSION_SECRET;
 
@@ -143,8 +144,8 @@ async function startServer() {
     try {
         await main();
         console.log("Connected to DB");
-        app.listen(8080, () => {
-            console.log("Server is listening on port 8080");
+        app.listen(PORT, () => {
+            console.log(`Server is listening on port ${PORT}`);
         });
     } catch (err) {
         console.error("Unable to connect to MongoDB:", err.message);
