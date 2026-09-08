@@ -1,9 +1,14 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 const initData = require("./data.js");
 const Listing = require("../models/listing.js");
 const geocodeLocation = require("../utils/geocode.js");
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const MONGO_URL = process.env.ATLAS_DB_URL || process.env.MONGO_URL;
+
+if (!MONGO_URL) {
+  throw new Error("ATLAS_DB_URL or MONGO_URL must be configured before seeding.");
+}
 
 async function main() {
   await mongoose.connect(MONGO_URL);
