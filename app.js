@@ -28,8 +28,8 @@ const PORT = process.env.PORT || 8080;
 const isProduction = process.env.NODE_ENV === "production";
 const sessionSecret = process.env.SESSION_SECRET;
 
-if (isProduction && !sessionSecret) {
-    throw new Error("SESSION_SECRET must be configured in production.");
+if (!sessionSecret) {
+    throw new Error("SESSION_SECRET must be configured in .env.");
 }
 
 async function main() {
@@ -62,7 +62,7 @@ app.use(helmet({
 app.use(express.static(path.join(__dirname, "public")));
 
 const sessionOptions = {
-    secret: sessionSecret || "development-only-secret",
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
