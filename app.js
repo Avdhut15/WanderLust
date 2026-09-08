@@ -21,7 +21,9 @@ const userRouter = require("./routes/user.js");
 
 
 
-const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/wanderlust";
+// const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/wanderlust";
+const dbUrl = process.env.ATLAS_DB_URL;
+
 const PORT = process.env.PORT || 8080;
 const isProduction = process.env.NODE_ENV === "production";
 const sessionSecret = process.env.SESSION_SECRET;
@@ -31,7 +33,7 @@ if (isProduction && !sessionSecret) {
 }
 
 async function main() {
-    await mongoose.connect(MONGO_URL, {
+    await mongoose.connect(dbUrl, {
         serverSelectionTimeoutMS: 5000,
     });
 }
@@ -64,8 +66,9 @@ const sessionOptions = {
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-        mongoUrl: MONGO_URL,
+        mongoUrl: dbUrl,
         ttl: 7 * 24 * 60 * 60,
+        touchAfter: 24 * 60 * 60,
     }),
     cookie: {
         maxAge:  7 * 24 * 60 * 60 * 1000,
@@ -105,17 +108,7 @@ app.use((req,res,next) => {
     next();
 });
 
-
-// app.get("/demouser",async(req,res) => {
-//     let fakeUser = new User({
-//         email: "student@gmail.com",
-//         username: "delta-student",
-//     });
-    
-//     let registeredUser = await User.register(fakeUser, "helloworld");
-//     res.send(registeredUser);
-// });
-
+ 
 
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);

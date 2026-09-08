@@ -28,7 +28,10 @@
 
       <hr />
 
-      <h3 class="show-price">₹ <%= listing.price.toLocaleString("en-IN") %></h3>
+      <% const showTaxes = typeof taxes !== "undefined" && taxes; %>
+      <% const displayTaxRate = typeof taxRate !== "undefined" ? taxRate : 0.18; %>
+      <% const displayPrice = showTaxes ? Math.round(listing.price * (1 + displayTaxRate)) : listing.price; %>
+      <h3 class="show-price">₹ <%= displayPrice.toLocaleString("en-IN") %><% if (showTaxes) { %> <small class="tax-note">incl. taxes</small><% } %></h3>
 
       <p class="show-location mt-3">
         <i class="fa-solid fa-location-dot text-danger"></i>

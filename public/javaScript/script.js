@@ -40,6 +40,14 @@
     })
   }
 
+  const taxToggle = document.querySelector('#tax-toggle')
+
+  if (taxToggle && taxToggle.form) {
+    taxToggle.addEventListener('change', () => {
+      taxToggle.form.requestSubmit()
+    })
+  }
+
   // Fetch all the forms we want to apply custom Bootstrap validation styles to
   const forms = document.querySelectorAll('.needs-validation')
 

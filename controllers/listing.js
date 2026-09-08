@@ -117,7 +117,11 @@ module.exports.show = async (req, res) => {
         );
     }
 
-    res.render("listings/show.ejs", { listing });
+    res.render("listings/show.ejs", {
+        listing,
+        taxes: req.query.taxes === "1",
+        taxRate: TAX_RATE,
+    });
 
     if (!listing.geometry?.coordinates?.length) {
         geocodeLocation(listing.location, listing.country)
